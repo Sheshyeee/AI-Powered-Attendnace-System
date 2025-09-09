@@ -1,0 +1,67 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Head, useForm, usePage } from '@inertiajs/react';
+import { Label } from '@radix-ui/react-dropdown-menu';
+
+export default function AddManager() {
+    const { department } = usePage<{ department: { id: number; name: string } }>().props;
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Departments',
+            href: '/departments',
+        },
+        {
+            title: `${department.name}`,
+            href: '/departments',
+        },
+    ];
+
+    const { data, setData, post, processing, reset } = useForm({
+        department_id: department.id,
+        name: '',
+        email: '',
+        password: '',
+    });
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        post('/employees/store', {
+            onSuccess: () => {
+                reset();
+            },
+        });
+    };
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Add Employee" />
+            <div className="p-5 pr-40 pl-40">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Add Employee</CardTitle>
+                        <CardDescription>{department.name}</CardDescription>
+                    </CardHeader>
+                    <form onSubmit={handleSubmit}>
+                        <CardContent>
+                            <Label>Name</Label>
+                            <Input value={data.name} onChange={(e) => setData('name', e.target.value)} />
+                            <Label>Email</Label>
+                            <Input type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} />
+                            <Label>Password</Label>
+                            <Input type="password" value={data.password} onChange={(e) => setData('password', e.target.value)} />
+                        </CardContent>
+                        <CardFooter className="mt-4">
+                            <Button type="submit" disabled={processing}>
+                                {processing ? 'Adding...' : 'Add Employee'}
+                            </Button>
+                        </CardFooter>
+                    </form>
+                </Card>
+            </div>
+        </AppLayout>
+    );
+}
