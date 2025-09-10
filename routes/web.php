@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ManagerDepartmentController;
@@ -30,6 +31,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/employees/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
     Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
     Route::put('/employee/details/edit/store/{id}', [EmployeeController::class, 'update'])->name('employees.update');
+
+    Route::post('/attendance/employee', [AttendanceController::class, 'store']);
+
 
     Route::get('/departments/{id}/AddManager/show', [UserController::class, 'showAddManager'])->name('departments.showAddManager');
     Route::post('/managers/store', [UserController::class, 'store']);

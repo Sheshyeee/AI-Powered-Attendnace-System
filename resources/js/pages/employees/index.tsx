@@ -1,7 +1,9 @@
+import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+
+import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -33,20 +35,44 @@ export default function Employees() {
         return () => clearInterval(interval);
     }, []);
 
+    const handleAction = (status: string) => {
+        router.post('/attendance/employee', { status });
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="flex w-full items-center justify-center p-4 text-center">
-                <p className="text-[60px] tracking-widest">{time}</p>
-                <div>
-                    <div>
-                        <Card>
+            <div className="mt-[-150px] flex h-full w-full flex-col items-center justify-center space-y-[85px] p-4 text-center">
+                <div className="flex flex-col space-y-[-10px]">
+                    <h1 className="text-[50px] tracking-widest text-red-500">Clock</h1>
+                    <p className="text-[70px] tracking-widest">{time}</p>
+                </div>
+                <div className="flex space-x-8">
+                    <Button onClick={() => handleAction('time_in')} variant="ghost">
+                        <Card className="w-[200px] cursor-pointer">
                             <CardHeader>
-                                <CardTitle>Card Title</CardTitle>
+                                <CardTitle>Time In</CardTitle>
                                 <CardDescription>Card Description</CardDescription>
                             </CardHeader>
                         </Card>
-                    </div>
+                    </Button>
+
+                    <Button onClick={() => handleAction('time_out')} variant="ghost">
+                        <Card className="w-[200px] cursor-pointer">
+                            <CardHeader>
+                                <CardTitle>Time Out</CardTitle>
+                                <CardDescription>Card Description</CardDescription>
+                            </CardHeader>
+                        </Card>
+                    </Button>
+                    <Button variant="ghost">
+                        <Card className="w-[200px] cursor-pointer">
+                            <CardHeader>
+                                <CardTitle>Other</CardTitle>
+                                <CardDescription>Card Description</CardDescription>
+                            </CardHeader>
+                        </Card>
+                    </Button>
                 </div>
             </div>
         </AppLayout>
