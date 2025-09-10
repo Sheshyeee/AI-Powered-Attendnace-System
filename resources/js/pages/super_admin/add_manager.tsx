@@ -8,16 +8,41 @@ import { Label } from '@radix-ui/react-dropdown-menu';
 
 export default function AddManager() {
     const { department } = usePage<{ department: { id: number; name: string } }>().props;
+    const { auth } = usePage<{ auth: { user: any; can: { manageDepartments: boolean; manageOwnDepartment: boolean; employees: boolean } } }>().props;
 
     const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Departments',
-            href: '/departments',
-        },
-        {
-            title: `${department.name}`,
-            href: '/departments',
-        },
+        ...(auth.can.manageDepartments
+            ? [
+                  {
+                      title: 'Departments',
+                      href: '/departments',
+                  },
+              ]
+            : []),
+        ...(auth.can.manageDepartments
+            ? [
+                  {
+                      title: `${department.name}`,
+                      href: '/departments',
+                  },
+              ]
+            : []),
+        ...(auth.can.manageOwnDepartment
+            ? [
+                  {
+                      title: 'Employees',
+                      href: '/manager/table/view',
+                  },
+              ]
+            : []),
+        ...(auth.can.manageOwnDepartment
+            ? [
+                  {
+                      title: `${department.name}`,
+                      href: '/manager/table/view',
+                  },
+              ]
+            : []),
     ];
 
     const { data, setData, post, processing, reset } = useForm({

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Departments;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
@@ -33,8 +34,8 @@ class EmployeeController extends Controller
             'department_id' => $request->department_id,
         ]);
 
-        return redirect()->route('departments.show', $request->department_id)
-            ->with('success', 'Employee added successfully.');
+        return Auth::user()->role === 'admin' ? redirect()->route('departments.show', $request->department_id)
+            ->with('success', 'Employee added successfully.') : redirect()->route('employees.view');
     }
 
     public function dashboard(Request $request)

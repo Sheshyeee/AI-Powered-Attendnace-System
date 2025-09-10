@@ -1,9 +1,20 @@
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+
+import { Head, Link, usePage } from '@inertiajs/react';
+import { Plus } from 'lucide-react';
 
 interface User {
     id: number;
@@ -43,7 +54,29 @@ export default function Employees() {
             <div className="p-5">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Department: {department.name}</CardTitle>
+                        <div className="flex items-center">
+                            <CardTitle>Department: {department.name}</CardTitle>
+                            <div className="ml-auto">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                        <Button variant="outline" className="flex cursor-pointer items-center gap-2">
+                                            <Plus />
+                                            <p>Add</p>
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem>
+                                          <Link href={`/departments/${department.id}/AddManager/show`}>Add Manager</Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                          <Link href={`/departments/${department.id}/AddEmployee/show`}>Add Employee</Link>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <Table>
