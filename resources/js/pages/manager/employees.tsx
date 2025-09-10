@@ -13,8 +13,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 
-import { Head, Link, usePage } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Ellipsis, Plus } from 'lucide-react';
 
 interface User {
     id: number;
@@ -31,23 +31,35 @@ interface Department {
     employee: User[];
 }
 
+interface Auth {
+    user: User;
+}
+
 interface PageProps {
+    auth: Auth;
     department: Department;
     [key: string]: any;
 }
 
 export default function Employees() {
     // Get data from the controller via Inertia
-    const { department } = usePage<PageProps>().props;
 
+    const { auth, department } = usePage<PageProps>().props;
+    const authUser = auth.user;
     // Combine managers and employees, or just show employees
     const allUsers = [...(department.manager || []), ...(department.employee || [])];
+
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Employees',
             href: '/manager/table/view',
         },
     ];
+
+    const handleDelete = (userId: number) => {
+        router.delete(`/employees/${userId}`);
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Employees" />
@@ -68,10 +80,10 @@ export default function Employees() {
                                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem>
-                                          <Link href={`/departments/${department.id}/AddManager/show`}>Add Manager</Link>
+                                            <Link href={`/departments/${department.id}/AddManager/show`}>Add Manager</Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem>
-                                          <Link href={`/departments/${department.id}/AddEmployee/show`}>Add Employee</Link>
+                                            <Link href={`/departments/${department.id}/AddEmployee/show`}>Add Employee</Link>
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
@@ -112,8 +124,32 @@ export default function Employees() {
                                             </TableCell>
                                             <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                                             <TableCell>
-                                                {/* Add your actions here */}
-                                                <span className="text-muted-foreground">Actions</span>
+                                                {authUser.id === user.id ? (
+                                                    <Button disabled variant="ghost">
+                                                        <Ellipsis />
+                                                    </Button>
+                                                ) : (
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" size="sm">
+                                                                <Ellipsis className="h-4 w-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent>
+                                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem>
+                                                                <Link href={`/employees/${user.id}/edit`}>Edit</Link>
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                className="text-red-600 focus:text-red-600"
+                                                                onClick={() => handleDelete(user.id)}
+                                                            >
+                                                                Delete
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                )}
                                             </TableCell>
                                         </TableRow>
                                     ))

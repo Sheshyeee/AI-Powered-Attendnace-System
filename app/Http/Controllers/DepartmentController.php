@@ -41,8 +41,7 @@ class DepartmentController extends Controller
 
     public function destroy($id)
     {
-        Gate::authorize('manage-departments'); // ✅ check before deleting
-
+        Gate::authorize('manage-all-departments'); 
         $department = Departments::findOrFail($id);
         $department->delete();
 

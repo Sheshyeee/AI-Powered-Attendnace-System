@@ -44,4 +44,42 @@ class EmployeeController extends Controller
         $department = $user->department->latest()->first();
         return inertia('employees/index', ['department' => $department]);
     }
+
+    public function destroy($id)
+    {
+        $employee = User::findOrFail($id);
+
+        $employee->delete();
+
+        // Check user role and redirect accordingly
+
+        return redirect()->route('employees.view')
+            ->with('success', 'Employee deleted successfully.');
+    }
+
+    public function edit($id)
+    {
+        $user = User::findOrfail($id);
+
+        return inertia('manager/edit_employees', ['user' => $user]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrfail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'role' => 'required|string|in:manager,employee',
+        ]);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('employees.view');
+    }
 }

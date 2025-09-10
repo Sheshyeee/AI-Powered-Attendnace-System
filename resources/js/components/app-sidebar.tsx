@@ -9,7 +9,7 @@ import { LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
 export function AppSidebar() {
-    const { auth } = usePage<{ auth: { user: any; can: { manageDepartments: boolean; manageOwnDepartment: boolean, employees: boolean } } }>().props;
+    const { auth } = usePage<{ auth: { user: any; can: { manageDepartments: boolean; manageOwnDepartment: boolean; employees: boolean } } }>().props;
 
     const mainNavItems: NavItem[] = [
         ...(auth.can.manageDepartments
@@ -51,7 +51,7 @@ export function AppSidebar() {
         ...(auth.can.employees
             ? [
                   {
-                      title: 'Dashboard',
+                      title: 'Record Attendance',
                       href: '/employees/dashboard',
                       icon: LayoutGrid,
                   },
