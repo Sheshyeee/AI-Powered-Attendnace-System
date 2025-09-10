@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
@@ -61,7 +62,21 @@ export default function Employees() {
                                         <TableRow key={user.id}>
                                             <TableCell>{user.name}</TableCell>
                                             <TableCell>{user.email}</TableCell>
-                                            <TableCell className="capitalize">{user.role}</TableCell>
+                                            <TableCell className="capitalize">
+                                                {user.role === 'manager' ? (
+                                                    <Badge variant="outline" className="bg-blue-200 text-blue-900">
+                                                        Manager
+                                                    </Badge>
+                                                ) : user.role === 'admin' ? (
+                                                    <Badge variant="outline" className="bg-red-200 text-red-900">
+                                                        Admin
+                                                    </Badge>
+                                                ) : (
+                                                    <Badge variant="outline" className="bg-green-200 text-green-900">
+                                                        Employee
+                                                    </Badge>
+                                                )}
+                                            </TableCell>
                                             <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                                             <TableCell>
                                                 {/* Add your actions here */}
